@@ -22,9 +22,9 @@ ghc-mod.package-db-stack
 *.dyn_hi
 *.dyn_o
 cabal.nix
-src/HaddockTest.hs
 default.nix.orig
 default.nix.bak
 .ghc.environment.*
 cabal.project.local
 dist-newstyle/
+src/MockIO/Cmds/UtilLinux/Paths.hs
