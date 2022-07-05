@@ -140,8 +140,8 @@ nonSpaces = many (satisfy (ﬧ ∘ isSpace))
 {-| Filesystem Type -}
 data FSType = FS_BPF | FS_CGroup2 | FS_Config | FS_Debug | FS_DevTmp | FS_DevPTS
             | FS_EFIVar | FS_Ext2 | FS_Fusectl | FS_HugeTLB | FS_MQueue
-            | FS_Proc | FS_PStore | FS_RAM | FS_Security | FS_Sys | FS_Tmp
-            | FS_VFat | FS_XFS
+            | FS_NFSD | FS_Proc | FS_PStore | FS_RAM | FS_RPC_Pipe | FS_Security
+            | FS_Sys | FS_Tmp | FS_VFat | FS_XFS
   deriving (Eq,Show)
 
 instance Parsecable FSType where
@@ -157,9 +157,11 @@ instance Parsecable FSType where
                        "fusectl"    → return FS_Fusectl
                        "hugetlbfs"  → return FS_HugeTLB
                        "mqueue"     → return FS_MQueue
+                       "nfsd"       → return FS_NFSD
                        "proc"       → return FS_Proc
                        "pstore"     → return FS_PStore
                        "ramfs"      → return FS_RAM
+                       "rpc_pipefs" → return FS_RPC_Pipe
                        "securityfs" → return FS_Security
                        "sysfs"      → return FS_Sys
                        "tmpfs"      → return FS_Tmp

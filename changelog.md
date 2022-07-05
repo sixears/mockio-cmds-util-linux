@@ -1,3 +1,7 @@
+1.0.1.2 2022-07-05
+==================
+- add NFSD, RPCPipe filesystem recognition
+
 1.0.1.1 2022-07-05
 ==================
 - use monadio-plus-2.5.0.0
