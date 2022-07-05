@@ -2,7 +2,9 @@
 module MockIO.Cmds.UtilLinux.FindMnt
   ( FindMntData, FindMntDatum, FSType(..)
   , filesystems, findmnt, findMntSource, findMntTarget
-  , source, target, fsroot, fstype, size, used, avail, label, partlabel
+  , source, sourceDevice, target, fsroot, fstype
+  , size, used, avail
+  , label, partlabel
   )
 where
 
@@ -31,8 +33,11 @@ import Data.ByteString.Lazy  ( fromStrict )
 
 -- fpath -------------------------------
 
+import FPath.Abs               ( Abs( AbsF ) )
 import FPath.AbsDir            ( AbsDir, parseAbsDirP )
+import FPath.AbsFile           ( AbsFile )
 import FPath.Error.FPathError  ( AsFPathError, FPathError )
+import FPath.Parseable         ( parse )
 
 -- lens --------------------------------
 
@@ -64,6 +69,7 @@ import MockIO.Process            ( ꙩ )
 
 import MonadIO.Error.CreateProcError  ( AsCreateProcError )
 import MonadIO.Error.ProcExitError    ( AsProcExitError )
+import MonadIO.File                   ( resolvelink )
 
 -- mtl ---------------------------------
 
@@ -92,7 +98,8 @@ import StdMain.ProcOutputParseError ( AsProcOutputParseError )
 
 -- text --------------------------------
 
-import Data.Text           ( drop, intercalate, pack, unlines )
+import Data.Text           ( drop, intercalate, isSuffixOf, pack, takeWhile
+                           , unlines )
 import Data.Text.Encoding  ( encodeUtf8 )
 
 -- text-printer ------------------------
@@ -219,6 +226,26 @@ instance FromJSON FindMntDatum where
 {-| Where the filesystem is mounted from (e.g., a device file) -}
 source ∷ Lens' FindMntDatum 𝕋
 source = lens _source (\ dtm s → dtm { _source = s })
+
+----------------------------------------
+
+{-| Attempt to find the source' device file.  If the source is a mount within
+    a filesystem; e.g., @/dev/nvme0n1p8[/nixpkgs]@; then the mount point
+    (@/nixpkgs@, in this case) is stripped off.  The source is then
+    parsed as an `AbsFile` (any failures are squashed to `𝕹`); and
+    that is symlink-resolved.  If the initial cited device file does not exist
+    (even as a symlink), then an error returns.  If the device file resolves to a
+    dangling symlink, then that is returned.
+-}
+sourceDevice ∷ ∀ ε μ . (MonadIO μ, AsFPathError ε, AsIOError ε, MonadError ε μ)⇒
+               FindMntDatum → μ (𝕄 Abs)
+sourceDevice  d =
+  let source_no_path = if "]" `isSuffixOf` (d ⊣ source)
+                       then takeWhile (\c → c ≢ '[') (d ⊣ source)
+                       else d ⊣ source
+   in case parse @AbsFile @FPathError (source_no_path) of
+        𝕷 _ → return 𝕹
+        𝕽 l → resolvelink (AbsF l)
 
 ----------------------------------------
 
