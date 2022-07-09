@@ -138,20 +138,21 @@ nonSpaces = many (satisfy (ﬧ ∘ isSpace))
 ------------------------------------------------------------
 
 {-| Filesystem Type -}
-data FSType = FS_BPF | FS_CGroup2 | FS_Config | FS_Debug | FS_DevTmp | FS_DevPTS
-            | FS_EFIVar | FS_Ext2 | FS_Fusectl | FS_HugeTLB | FS_MQueue
-            | FS_NFSD | FS_Proc | FS_PStore | FS_RAM | FS_RPC_Pipe | FS_Security
-            | FS_Sys | FS_Tmp | FS_VFat | FS_XFS
+data FSType = FS_Auto | FS_BPF | FS_CGroup2 | FS_Config | FS_Debug | FS_DevTmp
+            | FS_DevPTS | FS_EFIVar | FS_Ext2 | FS_Fusectl | FS_HugeTLB
+            | FS_MQueue | FS_NFSD | FS_Proc | FS_PStore | FS_RAM | FS_RPC_Pipe
+            | FS_Security | FS_Sys | FS_Tmp | FS_VFat | FS_XFS
   deriving (Eq,Show)
 
 instance Parsecable FSType where
   parser =
-    nonSpaces ≫ \ case "bpf"        → return FS_BPF
+    nonSpaces ≫ \ case "autofs"     → return FS_Auto
+                       "bpf"        → return FS_BPF
                        "cgroup2"    → return FS_CGroup2
                        "configfs"   → return FS_Config
                        "debugfs"    → return FS_Debug
-                       "devtmpfs"   → return FS_DevTmp
                        "devpts"     → return FS_DevPTS
+                       "devtmpfs"   → return FS_DevTmp
                        "efivarfs"   → return FS_EFIVar
                        "ext2"       → return FS_Ext2
                        "fusectl"    → return FS_Fusectl

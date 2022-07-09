@@ -1,3 +1,7 @@
+1.0.1.3 2022-07-09
+==================
+- add AutoFS filesystem recognition
+
 1.0.1.2 2022-07-05
 ==================
 - add NFSD, RPCPipe filesystem recognition
