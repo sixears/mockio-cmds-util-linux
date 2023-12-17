@@ -187,14 +187,14 @@ chop_ x         = x
 ------------------------------------------------------------
 
 {-| The detailed data for a single filesystem as reported by @findmnt@ -}
-data FindMntDatum = FindMntDatum { _source ∷ 𝕋
-                                 , _target ∷ MyAbsDir
-                                 , _fstype ∷ FSType
-                                 , _used ∷ ℕ
-                                 , _size ∷ ℕ
-                                 , _avail ∷ ℕ
-                                 , _fsroot ∷ MyAbsDir
-                                 , _label ∷ 𝕄 𝕋
+data FindMntDatum = FindMntDatum { _source    ∷ 𝕋
+                                 , _target    ∷ MyAbsDir
+                                 , _fstype    ∷ FSType
+                                 , _used      ∷ ℕ
+                                 , _size      ∷ ℕ
+                                 , _avail     ∷ ℕ
+                                 , _fsroot    ∷ MyAbsDir
+                                 , _label     ∷ 𝕄 𝕋
                                  , _partlabel ∷ 𝕄 𝕋
                                  }
   deriving (Generic,Show)
